@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RESILIENCITY — Parcela 658RM1/1 — 3D Survey Model</title>
+  <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --ink:      #1a1a1a;
+      --mid:      #555555;
+      --pale:     #f0ede8;
+      --accent:   #c8611a;
+      --line:     #d4cfc9;
+      --white:    #ffffff;
+      --viewer-h: calc(100vh - 140px);
+    }
+
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--pale);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--ink);
+      color: var(--white);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    header .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    header .tag {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    header .title {
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.75);
+      letter-spacing: 0.02em;
+    }
+    header .deliverable {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── VIEWER ── */
+    .viewer-wrap {
+      flex: 1;
+      position: relative;
+      background: #e8e3db;
+    }
+
+    model-viewer {
+      width: 100%;
+      height: var(--viewer-h);
+      min-height: 400px;
+      --poster-color: #e8e3db;
+      background: #e8e3db;
+    }
+
+    /* loading overlay */
+    .loader {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #e8e3db;
+      gap: 16px;
+      pointer-events: none;
+      transition: opacity 0.4s;
+      z-index: 10;
+    }
+    .loader.hidden { opacity: 0; pointer-events: none; }
+    .loader-label {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .loader-bar-wrap {
+      width: 180px;
+      height: 2px;
+      background: var(--line);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.2s;
+    }
+
+    /* ── CONTROLS HINT ── */
+    .hint {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(26,26,26,0.72);
+      color: rgba(255,255,255,0.85);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      padding: 6px 16px;
+      border-radius: 20px;
+      pointer-events: none;
+      white-space: nowrap;
+      backdrop-filter: blur(4px);
+      opacity: 1;
+      transition: opacity 1s;
+    }
+    .hint.hidden { opacity: 0; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.4);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      padding: 0 32px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    footer a {
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+    }
+
+    /* ── ERROR STATE ── */
+    .error-box {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      background: #e8e3db;
+      z-index: 20;
+    }
+    .error-box.visible { display: flex; }
+    .error-icon {
+      font-size: 32px;
+      opacity: 0.4;
+    }
+    .error-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .error-msg {
+      font-size: 12px;
+      color: var(--mid);
+      text-align: center;
+      max-width: 380px;
+      line-height: 1.6;
+    }
+    .error-msg code {
+      background: rgba(0,0,0,0.07);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      header { padding: 0 16px; height: 48px; }
+      header .deliverable { display: none; }
+      footer { padding: 0 16px; }
+      .hint { font-size: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <span class="tag">RESILIENCITY · AID 013244/01/0</span>
+      <span class="title">Parcela 658RM1/1 · Bairro Ferroviário · Maputo</span>
+    </div>
+    <span class="deliverable">D1.1 · Photogrammetric Survey · 06 June 2026</span>
+  </header>
+
+  <div class="viewer-wrap">
+
+    <!-- Loading indicator -->
+    <div class="loader" id="loader">
+      <span class="loader-label">Loading 3D model</span>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loaderBar"></div>
+      </div>
+    </div>
+
+    <!-- Error state -->
+    <div class="error-box" id="errorBox">
+      <span class="error-icon">⚠</span>
+      <span class="error-title">Model not found</span>
+      <p class="error-msg">
+        Make sure the file <code>FULL_155img_3Dmodel_WEB.glb</code> is in the
+        same folder as this HTML file, then open the file again in your browser.
+      </p>
+    </div>
+
+    <!-- 3D Viewer -->
+    <model-viewer
+      id="viewer"
+      src="FULL_155img_3Dmodel_WEB.glb"
+      alt="Photogrammetric 3D model of Parcela 658RM1/1, Bairro Ferroviário, Maputo"
+      camera-controls
+      auto-rotate
+      auto-rotate-delay="3000"
+      rotation-per-second="4deg"
+      shadow-intensity="0.6"
+      shadow-softness="0.8"
+      exposure="1.1"
+      environment-image="neutral"
+      touch-action="pan-y"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      style="width:100%; height:var(--viewer-h); min-height:400px;"
+    ></model-viewer>
+
+    <!-- Controls hint -->
+    <div class="hint" id="hint">
+      Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-click to pan
+    </div>
+
+  </div>
+
+  <footer>
+    <span>MINIUSINA – Sociedade Unipessoal, Lda · Maputo, Moçambique</span>
+    <span>Istituto Oikos E.T.S. · Activity A2.1 · WGS84 / UTM Zone 36S · −25.906971, 32.609368</span>
+  </footer>
+
+  <script>
+    const viewer   = document.getElementById('viewer');
+    const loader   = document.getElementById('loader');
+    const loaderBar = document.getElementById('loaderBar');
+    const errorBox = document.getElementById('errorBox');
+    const hint     = document.getElementById('hint');
+
+    // Progress bar
+    viewer.addEventListener('progress', e => {
+      const pct = Math.round(e.detail.totalProgress * 100);
+      loaderBar.style.width = pct + '%';
+    });
+
+    // Hide loader when loaded
+    viewer.addEventListener('load', () => {
+      loader.classList.add('hidden');
+      // Hide hint after 5 seconds
+      setTimeout(() => hint.classList.add('hidden'), 5000);
+    });
+
+    // Show error if model fails
+    viewer.addEventListener('error', () => {
+      loader.classList.add('hidden');
+      errorBox.classList.add('visible');
+    });
+
+    // Hide hint on first interaction
+    viewer.addEventListener('camera-change', () => {
+      hint.classList.add('hidden');
+    }, { once: true });
+  </script>
+
+</body>
+</html>
